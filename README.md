@@ -13,5 +13,5 @@ and uncomment port
 
 TODO
 ====
-fect data 1 time/day keep data into memory
+[done] fect data 1 time/day keep data into memory
 response request just only read from memory 
