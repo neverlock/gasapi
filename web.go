@@ -66,8 +66,8 @@ func bcpPrice (w http.ResponseWriter, r *http.Request){
 		getdataHR=currentHR
 		log.Println(current)
 		log.Println(getdataHR)
-		getbcpPrice()
-		getpttPrice()
+		go getbcpPrice()
+		go getpttPrice()
 		}
 	}
 	mapD := map[string]string{"LastUpdate":bcplastUpdate,"bcpDiesel":bcpDiesel,"bcpGasoholE85":bcpGasoholE85,"bcpGasoholE20":bcpGasoholE20,"bcpGasohol91":bcpGasohol91,"bcpGasohol95":bcpGasohol95,"NGV":bcpNGV}
@@ -128,8 +128,8 @@ func pttPrice (w http.ResponseWriter, r *http.Request){
 		getdataHR=currentHR
 		log.Println(current)
 		log.Println(getdataHR)
-		getbcpPrice()
-		getpttPrice()
+		go getbcpPrice()
+		go getpttPrice()
 		}
 	}
 	mapD := map[string]string{"LastUpdate":bluelastUpdate,"blueGasoline95":blueGasoline95,"blueGasohol91":blueGasohol91,"blueGasohol95":blueGasohol95,"blueGasoholE20":blueGasoholE20,"blueGasoholE85":blueGasoholE85,"blueDiesel":blueDiesel,"hyForceDiesel":hyForceDiesel,"NGV":blueNGV}
