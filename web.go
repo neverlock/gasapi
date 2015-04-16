@@ -6,6 +6,7 @@ import (
 	"os"
 	"log"
 	"time"
+	"html"
 	"strings"
 	"github.com/gorilla/mux"
 	"github.com/PuerkitoBio/goquery"
@@ -15,6 +16,7 @@ import (
 	var bcplastUpdate,bcpDiesel,bcpGasoholE85,bcpGasoholE20,bcpGasohol91,bcpGasohol95,bcpNGV string
 	var bluelastUpdate,blueGasoline95,blueGasohol91,blueGasohol95,blueGasoholE20,blueGasoholE85,blueDiesel,hyForceDiesel,blueNGV string
 	var current string
+	var currentHR,getdataHR int
 
 func main() {
 /*
@@ -30,26 +32,43 @@ func main() {
         rtr.HandleFunc("/ptt",pttPrice).Methods("GET")
         rtr.HandleFunc("/bcp",bcpPrice).Methods("GET")
         http.Handle("/", rtr)
-	//bind := ":8080"
+//	bind := ":8080"
         bind :=fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT"))
 	fmt.Printf("listening on %s...", bind)
         http.ListenAndServe(bind, nil)
 
 }
 
+func httplog(r *http.Request){
+        //ip,_,_ := net.SplitHostPort(r.RemoteAddr)
+        log.Printf("%s - %s - %s - %s - %q",
+                r.RemoteAddr,
+                r.Proto,//
+                r.Method,//
+                r.UserAgent(),
+                html.EscapeString(r.URL.Path),
+        )
+}
+
 func bcpPrice (w http.ResponseWriter, r *http.Request){
+	httplog(r)
 	loc, _ := time.LoadLocation("Asia/Bangkok")
 	now:=time.Now().In(loc)
 	now1:=fmt.Sprint(now.Year(),now.Month(),now.Day())
+	currentHR=now.Hour()
 	log.Println(now1)
-
+	log.Println(currentHR)
 	if (current == "")||(current != now1) {
+		if (getdataHR < 5) && (currentHR >= 5) {
 		loc, _ := time.LoadLocation("Asia/Bangkok")
 		now:=time.Now().In(loc)
 		current=fmt.Sprint(now.Year(),now.Month(),now.Day())
+		getdataHR=currentHR
 		log.Println(current)
+		log.Println(getdataHR)
 		getbcpPrice()
 		getpttPrice()
+		}
 	}
 	mapD := map[string]string{"LastUpdate":bcplastUpdate,"bcpDiesel":bcpDiesel,"bcpGasoholE85":bcpGasoholE85,"bcpGasoholE20":bcpGasoholE20,"bcpGasohol91":bcpGasohol91,"bcpGasohol95":bcpGasohol95,"NGV":bcpNGV}
 	js,_ := json.Marshal(mapD)
@@ -93,18 +112,25 @@ Review 9: 13.00
 }
 
 func pttPrice (w http.ResponseWriter, r *http.Request){
+	httplog(r)
 	loc, _ := time.LoadLocation("Asia/Bangkok")
 	now:=time.Now().In(loc)
 	now1:=fmt.Sprint(now.Year(),now.Month(),now.Day())
+	currentHR=now.Hour()
 	log.Println(now1)
+	log.Println(currentHR)
 
 	if (current == "")||(current != now1) {
+		if (getdataHR < 5) && (currentHR >= 5) {
 		loc, _ := time.LoadLocation("Asia/Bangkok")
 		now:=time.Now().In(loc)
 		current=fmt.Sprint(now.Year(),now.Month(),now.Day())
+		getdataHR=currentHR
 		log.Println(current)
+		log.Println(getdataHR)
 		getbcpPrice()
 		getpttPrice()
+		}
 	}
 	mapD := map[string]string{"LastUpdate":bluelastUpdate,"blueGasoline95":blueGasoline95,"blueGasohol91":blueGasohol91,"blueGasohol95":blueGasohol95,"blueGasoholE20":blueGasoholE20,"blueGasoholE85":blueGasoholE85,"blueDiesel":blueDiesel,"hyForceDiesel":hyForceDiesel,"NGV":blueNGV}
 	js,_ := json.Marshal(mapD)
